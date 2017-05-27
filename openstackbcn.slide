@@ -13,7 +13,7 @@ sjr@redhat.com
 
 Recovering sysadmin:
 
-.image images/me_even_smaller.jpg 130 140
+.image images/me_even_smaller.jpg 180 140
 
 - Worked in traditional sysadmin envs. since 2002 to 2012
 - Done some 4 years of "DevOps" time in Germany
@@ -23,28 +23,66 @@ Recovering sysadmin:
 
 * Agenda
 
-- How to deploy a basic OpenShift/Origin
+- How to deploy a basic OpenShift Origin
 - Deploy our first application
 
 
-* What's OpenShift/Origin?
+* What's OpenShift Origin?
 
 - OpenShift Origin is the open source upstream project that powers OpenShift Container Platform
 - (opinionated) Kubernetes for the Enterprise
 
-* Why OpenShift/Origin?
-
-- Container Hype?
-- Agile Hype?
-- DevOps Hype?
-- Real need?
-- Pick yours...
-
-.image images/Philosoraptor.jpg 170 170
-.caption _Hmmmm_Why_do_I_need_this_
-
+: Currently containers a run on docker
+: Kubernetes used for scheduling and management
 
 * History
 
 - OpenShift v1/v2, own implementation, some weird stuff with gears, cartdriges...
 - OpenShift (aka Origin) v3, rewritten and based on Kubernetes
+
+: OpenShift v1/v2 heavily used kernel features (cgroups, SELinux, ...) for running containerized apps
+
+* Why OpenShift Origin?
+
+- Container Hype?
+- Agile Hype?
+- DevOps Hype?
+- Real need?
+- Take your pick...
+
+.image images/Philosoraptor.jpg 170 170
+.caption _Hmmmm_Why_do_I_need_this_
+
+: This is about the idea of writing Origin
+: Kubernetes does a wonderful job, avoid reinventing the wheel
+: Truth is there is certain need to have a fully integrated solution.
+: But integration brings opinions.
+
+* Kubernetes + some extras
+
+- Automation (builds and deployments)
+- Self service (templates and web console)
+- Authentication (different backends)
+- Projects (namespaces)
+- Routing functionality
+- Metrics
+- Logging
+- Language support
+- Jenkins integration
+
+: Provide a fully functional platform for Developers
+: Does that help Ops?
+
+* Project Namespaces
+
+- Sandboxed environments
+- Network VXLan (openshift-sdn)
+- Auth policies
+- Resource quotas
+- Apps
+
+* Applications
+
+- Images run in containers
+- Can be group as a Service
+- Defined as templates
