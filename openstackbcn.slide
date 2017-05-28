@@ -51,7 +51,7 @@ Recovering sysadmin:
 - Take your pick...
 
 .image images/Philosoraptor.jpg 170 170
-.caption Hmmmm why do I need all this again 
+.caption Hmmmm why do I need all this again
 
 : This is about the idea of writing Origin
 : Kubernetes does a wonderful job, avoid reinventing the wheel
@@ -121,3 +121,126 @@ Objects list:
 * Simple template example #3
 
 .code -numbers examples/simple-template.yaml /^parameters:/,/master$/
+
+* To the installation...
+
+- Ansible installer (advanced installer)
+- Few different cluster topologies supported
+- Masters, nodes, infra nodes, storage, ...
+- Load balancers for multi master setup
+
+* Inventory file #1
+
+.code -edit examples/ansible_inventory /^\[infra\]/,/masters$/
+
+* Inventory file #2
+
+.code -edit examples/ansible_inventory /^\[OSEv3:children\]/,/openshift_master_default_subdomain=192.168.40.10.nip.io/
+
+* Inventory file #3
+
+.code -edit examples/ansible_inventory /^openshift_hosted_router_selector/,/openshift_hosted_registry_cert_expire_days=730/
+
+* Inventory file #4
+
+.code -edit examples/ansible_inventory /^openshift_metrics_install_metrics/,/openshift_metrics_hawkular_hostname=hawkular.192.168.40.10.nip.io/
+
+* Inventory file #4
+
+.code -edit examples/ansible_inventory /^openshift_logging_install_logging=true/,/openshift_logging_image_version=latest/
+
+* Run it!
+
+    $ ansible-playbook -i openshift_inventory openshift-ansible/playbooks/byo/config.yml
+
+.image images/starting_installer.jpg 450 400
+
+* Result - default namespace
+
+    $ oc get pods,routes,svc -n default
+    NAME                          READY     STATUS    RESTARTS   AGE
+    po/docker-registry-1-7dljj    1/1       Running   1          1d
+    po/registry-console-1-0j043   1/1       Running   1          1d
+    po/router-1-f8hxk             1/1       Running   1          1d
+
+    NAME                      HOST/PORT                                       PATH      SERVICES           PORT      TERMINATION   WILDCARD
+    routes/docker-registry    docker-registry-default.192.168.40.10.nip.io              docker-registry    <all>     passthrough   None
+    routes/registry-console   registry-console-default.192.168.40.10.nip.io             registry-console   <all>     passthrough   None
+
+    NAME                   CLUSTER-IP       EXTERNAL-IP   PORT(S)                   AGE
+    svc/docker-registry    172.30.93.198    <none>        5000/TCP                  1d
+    svc/kubernetes         172.30.0.1       <none>        443/TCP,53/UDP,53/TCP     1d
+    svc/registry-console   172.30.145.202   <none>        9000/TCP                  1d
+    svc/router             172.30.247.150   <none>        80/TCP,443/TCP,1936/TCP   1d
+
+* Result #2 - openshift-infra namespace
+
+    $ oc get pods,routes,svc -n openshift-infra
+    NAME                            READY     STATUS    RESTARTS   AGE
+    po/hawkular-cassandra-1-bvm54   1/1       Running   1          1d
+    po/hawkular-metrics-vhqp8       1/1       Running   7          1d
+    po/heapster-70cf0               1/1       Running   6          1d
+
+    NAME                      HOST/PORT                       PATH      SERVICES           PORT      TERMINATION   WILDCARD
+    routes/hawkular-metrics   hawkular.192.168.40.10.nip.io             hawkular-metrics   <all>     reencrypt     None
+
+    NAME                           CLUSTER-IP       EXTERNAL-IP   PORT(S)                               AGE
+    svc/hawkular-cassandra         172.30.230.183   <none>        9042/TCP,9160/TCP,7000/TCP,7001/TCP   1d
+    svc/hawkular-cassandra-nodes   None             <none>        9042/TCP,9160/TCP,7000/TCP,7001/TCP   1d
+    svc/hawkular-metrics           172.30.225.223   <none>        443/TCP                               1d
+    svc/heapster                   172.30.148.221   <none>        80/TCP                                1d
+
+* Result #3 - logging namespace
+
+    $ oc get pods,routes,svc -n logging
+    NAME                                         READY     STATUS    RESTARTS   AGE
+    po/logging-curator-1-pxb4d                   1/1       Running   19         1d
+    po/logging-es-data-master-swqjaw6z-3-8mstj   1/1       Running   1          1d
+    po/logging-fluentd-0vkn2                     1/1       Running   1          1d
+    po/logging-fluentd-985rw                     1/1       Running   1          1d
+    po/logging-fluentd-s9n9h                     1/1       Running   1          1d
+    po/logging-kibana-8-b41ph                    2/2       Running   2          23h
+
+    NAME                        HOST/PORT                             PATH      SERVICES             PORT      TERMINATION          WILDCARD
+    routes/logging-kibana       kibana-logging.192.168.40.10.nip.io             logging-kibana       <all>     reencrypt/Redirect   None
+
+    NAME                         CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+    svc/logging-es               172.30.100.81   <none>        9200/TCP   1d
+    svc/logging-es-cluster       172.30.112.92   <none>        9300/TCP   1d
+    svc/logging-kibana           172.30.111.52   <none>        443/TCP    1d
+
+* Let's start using it...
+
+.image images/nowwhat.gif
+
+* The console #1
+
+.image images/console1.png 500 800
+
+* The console #2
+
+.image images/console2.png 500 800
+
+* The console #3
+
+.image images/console3.png 550 800
+
+* The console #4
+
+.image images/console4.png 500 800
+
+* The console #5
+
+.image images/console5.png 550 750
+
+: Paratemeters follow...
+: Parameters come from the template
+: At the bottom labels can be added
+
+* The console #6
+
+.image images/console6.png 550 750
+
+* The console #7
+
+.image images/console7.png 500 800
