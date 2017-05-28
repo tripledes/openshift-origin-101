@@ -32,8 +32,8 @@ Recovering sysadmin:
 - OpenShift Origin is the open source upstream project that powers OpenShift Container Platform
 - (opinionated) Kubernetes for the Enterprise
 
-: Currently containers a run on docker
-: Kubernetes used for scheduling and management
+: Currently containers run on docker
+: Kubernetes used for scheduling and management, orquestration
 
 * History
 
@@ -79,13 +79,14 @@ Kubernetes + some extras:
 
 - Sandboxed environments
 - Network VXLan (openshift-sdn)
-- Auth policies
+- Authorization policies
 - Resource quotas
 - Apps
 
-: Using namespaces => isolation/multitenancy
+: A project is a Kubernetes namespace with additional annotations
+: And is the central vehicle by which access to resources for regular users is managed.
 : openshift-sdn based in OpenVSwitch provides network overlay
-: auth policies inside the project
+: authorization policies inside the project
 : resource quotas per project
 
 * Applications
@@ -105,6 +106,7 @@ Kubernetes + some extras:
 
 : From web console, a form is presented when template is selected, params
 : Those must be specified when using CLI
+: App stack defined as template with parameters for using same code in different stages
 
 * Simple template example #1
 
@@ -112,15 +114,23 @@ Template metadata:
 
 .code -numbers examples/simple-template.yaml /^apiVersion: v1/,/nosql"/
 
+: Metadata, useful when listing templates
+
 * Simple template example #2
 
 Objects list:
 
 .code -numbers examples/simple-template.yaml /^objects:/,/protocol: TCP$/
 
+: App definition, in this case is quite simple
+: environment, containers, ports...
+
 * Simple template example #3
 
 .code -numbers examples/simple-template.yaml /^parameters:/,/master$/
+
+: Finally parameters, the way to reconfigure our applications
+: Provided parameters are replaced when found along the template
 
 * To the installation...
 
@@ -128,6 +138,9 @@ Objects list:
 - Few different cluster topologies supported
 - Masters, nodes, infra nodes, storage, ...
 - Load balancers for multi master setup
+
+: For playing around there easier ways, oc cluster up, minishift, stuff for another session
+: single master, multi master, colocated etcd, external etcd nodes, etc.
 
 * Inventory file #1
 
@@ -155,7 +168,9 @@ Objects list:
 
 .image images/starting_installer.jpg 450 400
 
-* Result - default namespace
+: Take quite a coffee...
+
+* Result - default project
 
     $ oc get pods,routes,svc -n default
     NAME                          READY     STATUS    RESTARTS   AGE
@@ -173,7 +188,7 @@ Objects list:
     svc/registry-console   172.30.145.202   <none>        9000/TCP                  1d
     svc/router             172.30.247.150   <none>        80/TCP,443/TCP,1936/TCP   1d
 
-* Result #2 - openshift-infra namespace
+* Result #2 - openshift-infra project
 
     $ oc get pods,routes,svc -n openshift-infra
     NAME                            READY     STATUS    RESTARTS   AGE
@@ -190,7 +205,7 @@ Objects list:
     svc/hawkular-metrics           172.30.225.223   <none>        443/TCP                               1d
     svc/heapster                   172.30.148.221   <none>        80/TCP                                1d
 
-* Result #3 - logging namespace
+* Result #3 - logging project
 
     $ oc get pods,routes,svc -n logging
     NAME                                         READY     STATUS    RESTARTS   AGE
@@ -249,6 +264,16 @@ Objects list:
 
 .image images/homer_cli_demo.jpg 300 500
 
+: Try golang example app
+: Create project on the web/or test loging as admin with oc
+: Start build
+: Watch it using oc
+: Watch on the web if possible
+
 * Questions?
 
 .image images/questions.jpg 300 500
+
+* Done!
+
+.image images/thanks.jpg 500 400
