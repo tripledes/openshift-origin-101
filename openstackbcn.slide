@@ -51,24 +51,26 @@ Recovering sysadmin:
 - Take your pick...
 
 .image images/Philosoraptor.jpg 170 170
-.caption _Hmmmm_Why_do_I_need_this_
+.caption Hmmmm why do I need all this again 
 
 : This is about the idea of writing Origin
 : Kubernetes does a wonderful job, avoid reinventing the wheel
 : Truth is there is certain need to have a fully integrated solution.
 : But integration brings opinions.
 
-* Kubernetes + some extras
+* What's on OpenShift Origin
 
-- Automation (builds and deployments)
-- Self service (templates and web console)
-- Authentication (different backends)
-- Projects (namespaces)
-- Routing functionality
-- Metrics
-- Logging
-- Language support
-- Jenkins integration
+Kubernetes + some extras:
+ - Automation (builds and deployments)
+ - Self service (templates and web console)
+ - Authentication (different backends)
+ - Projects (namespaces)
+ - Routing functionality
+ - Metrics
+ - Logging
+ - Language support
+ - Jenkins integration
+ ...
 
 : Provide a fully functional platform for Developers
 : Does that help Ops?
@@ -81,8 +83,41 @@ Recovering sysadmin:
 - Resource quotas
 - Apps
 
+: Using namespaces => isolation/multitenancy
+: openshift-sdn based in OpenVSwitch provides network overlay
+: auth policies inside the project
+: resource quotas per project
+
 * Applications
 
 - Images run in containers
 - Can be group as a Service
 - Defined as templates
+
+* Templates
+
+- Describes a set of objects that can be parameterized and processed
+- Produces a list of objects for ready creation
+- Anything you have permission to create within a project
+- From CLI
+- From project uploaded templates
+- From global template library
+
+: From web console, a form is presented when template is selected, params
+: Those must be specified when using CLI
+
+* Simple template example #1
+
+Template metadata:
+
+.code -numbers examples/simple-template.yaml /^apiVersion: v1/,/nosql"/
+
+* Simple template example #2
+
+Objects list:
+
+.code -numbers examples/simple-template.yaml /^objects:/,/protocol: TCP$/
+
+* Simple template example #3
+
+.code -numbers examples/simple-template.yaml /^parameters:/,/master$/
